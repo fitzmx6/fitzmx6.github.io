@@ -136,36 +136,41 @@ Portfolio content is managed in `/src/data/data.json`. Update this file to add o
 
 ## Deployment
 
-### Current Deployment: Heroku
+### Current Deployment: GitHub Pages
 
-The site is currently deployed on Heroku with automatic deploys from the `master` branch.
+The site is automatically deployed to GitHub Pages using GitHub Actions whenever code is pushed to the `master` branch.
 
-**Deploy to Heroku:**
+**Automatic Deployment:**
 
-1. Install Heroku CLI (if not already installed):
-```bash
-brew install heroku/brew/heroku
-```
-
-2. Login to Heroku:
-```bash
-heroku login
-```
-
-3. Deploy changes:
+Simply push to the master branch:
 ```bash
 git add .
 git commit -m "Your commit message"
-git push origin master  # Pushes to GitHub and auto-deploys to Heroku
+git push origin master
 ```
 
-The `Procfile` is configured to run `npm start` which serves the built static files.
+The GitHub Actions workflow (`.github/workflows/deploy.yml`) will automatically:
+1. Build the project
+2. Deploy to GitHub Pages
+3. Make the site live at [coryfitzpatrick.com](https://coryfitzpatrick.com)
 
-### Alternative Hosting Options
+**Custom Domain Setup:**
 
-The app can also be deployed to other static hosting platforms:
+The repository includes a `CNAME` file pointing to `coryfitzpatrick.com`. To use your custom domain:
 
-**Manual Deployment:**
+1. Go to your repository Settings → Pages
+2. Under "Custom domain", enter: `coryfitzpatrick.com`
+3. Configure your DNS provider to point to GitHub Pages:
+   - Add an A record pointing to GitHub's IPs:
+     - `185.199.108.153`
+     - `185.199.109.153`
+     - `185.199.110.153`
+     - `185.199.111.153`
+   - Or add a CNAME record: `fitzmx6.github.io`
+
+**Manual Deployment (Alternative):**
+
+If you prefer to deploy manually:
 
 1. Build the project:
 ```bash
@@ -174,11 +179,11 @@ npm run build
 
 2. Deploy the `dist` folder to your hosting provider
 
-Compatible hosting platforms:
-- **Heroku** (currently used)
+**Compatible hosting platforms:**
+- **GitHub Pages** (currently used)
 - Netlify
 - Vercel
-- GitHub Pages
+- Cloudflare Pages
 - Any static hosting service
 
 ## Scripts
