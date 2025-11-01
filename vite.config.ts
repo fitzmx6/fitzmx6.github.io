@@ -4,7 +4,7 @@ import path from 'path';
 
 export default defineConfig({
     plugins: [react()],
-    base: '/',
+    base: '/reactportfolio/',
     server: {
         port: 3000,
         strictPort: true,
