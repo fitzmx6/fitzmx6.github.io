@@ -29,15 +29,21 @@ Modern portfolio website showcasing development, design, and photography work wi
 - **Build Tool**: Vite
 - **Styling**: SCSS (Sass)
 - **Testing**: Jest, React Testing Library
-- **Deployment**: Static hosting (configured for modern platforms)
+- **Deployment**: GitHub Pages with GitHub Actions CI/CD
+- **DNS & CDN**: Cloudflare (proxied with SSL/TLS)
 - **AI Backend**: Google Cloud Run (separate repository)
 
 ## Project Structure
 
 ```
-reactportfolio/
+fitzmx6.github.io/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml   # GitHub Actions deployment workflow
 ├── public/
-│   └── images/          # Portfolio images and assets
+│   ├── images/          # Portfolio images and assets
+│   ├── CNAME            # Custom domain configuration
+│   └── 404.html         # SPA routing for direct URL access
 ├── src/
 │   ├── components/      # React components
 │   │   ├── chatbot-page.jsx      # AI chatbot interface
@@ -65,8 +71,8 @@ reactportfolio/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/reactportfolio.git
-cd reactportfolio
+git clone https://github.com/fitzmx6/fitzmx6.github.io.git
+cd fitzmx6.github.io
 ```
 
 2. Install dependencies:
@@ -81,7 +87,7 @@ Run the development server:
 npm run dev
 ```
 
-The site will be available at `http://localhost:5173`
+The site will be available at `http://localhost:3000`
 
 ### Building for Production
 
@@ -156,17 +162,30 @@ The GitHub Actions workflow (`.github/workflows/deploy.yml`) will automatically:
 
 **Custom Domain Setup:**
 
-The repository includes a `CNAME` file pointing to `coryfitzpatrick.com`. To use your custom domain:
+The site uses `coryfitzpatrick.com` as a custom domain, configured with:
 
-1. Go to your repository Settings → Pages
-2. Under "Custom domain", enter: `coryfitzpatrick.com`
-3. Configure your DNS provider to point to GitHub Pages:
-   - Add an A record pointing to GitHub's IPs:
+1. **GitHub Pages Configuration:**
+   - Repository name: `fitzmx6.github.io` (enables apex domain support)
+   - Custom domain setting: `coryfitzpatrick.com`
+   - Enforce HTTPS: Enabled
+
+2. **Cloudflare DNS Configuration:**
+   - **A Records** (apex domain `@`):
      - `185.199.108.153`
      - `185.199.109.153`
      - `185.199.110.153`
      - `185.199.111.153`
-   - Or add a CNAME record: `fitzmx6.github.io`
+   - **CNAME Record** (www subdomain):
+     - Name: `www`
+     - Target: `fitzmx6.github.io`
+   - **Proxy Status**: Orange cloud (proxied) for all records
+   - **SSL/TLS Mode**: Full
+   - **Always Use HTTPS**: Enabled
+
+3. **SPA Routing Solution:**
+   - `public/404.html` redirects direct URL access to index.html
+   - Enables routes like `/dev`, `/photo`, `/design` to work on page refresh
+   - Uses [spa-github-pages](https://github.com/rafgraph/spa-github-pages) technique
 
 **Manual Deployment (Alternative):**
 
@@ -219,6 +238,12 @@ npm run build
 - Hover animations on project cards
 - Category-based filtering
 - Detail pages for each project
+
+### SPA Routing on GitHub Pages
+- Custom 404.html handles direct navigation to routes
+- Redirects preserve the path using query parameters
+- index.html restores clean URLs using History API
+- Enables bookmarking and sharing of specific portfolio pages
 
 ## Browser Support
 
