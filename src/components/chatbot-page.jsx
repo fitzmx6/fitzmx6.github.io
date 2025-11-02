@@ -140,21 +140,22 @@ export default class ChatbotPage extends React.Component {
                 </div>
 
                 <div className={`chat-container ${this.state.isFullscreen ? 'fullscreen' : ''}`}>
-                    <div className="chat-header">
-                        <h2>Ask me about Cory's skills and experience</h2>
+                    {!this.state.isFullscreen && (
+                        <div className="chat-header">
+                            <h2>Ask me about Cory's skills and experience</h2>
 
-                        <p className="chat-subtitle">I'm an AI assistant that can help you learn about Cory's technical abilities and work history.</p>
-
-                        <button
-                            className="fullscreen-toggle"
-                            onClick={this.toggleFullscreen}
-                            aria-label={this.state.isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
-                        >
-                            {this.state.isFullscreen ? '✕' : '⛶'}
-                        </button>
-                    </div>
+                            <p className="chat-subtitle">I'm an AI assistant that can help you learn about Cory's technical abilities and work history.</p>
+                        </div>
+                    )}
 
                 <div className="chat-messages">
+                    <button
+                        className="fullscreen-toggle"
+                        onClick={this.toggleFullscreen}
+                        aria-label={this.state.isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+                    >
+                        {this.state.isFullscreen ? '✕' : '⛶'}
+                    </button>
                     {this.state.messages.length === 0 && (
                         <div className="welcome-message">
                             <p>Welcome! Ask me anything about Cory's technical skills, work experience, or projects.</p>
