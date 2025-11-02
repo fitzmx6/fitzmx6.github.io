@@ -342,3 +342,14 @@
     border-color: #777;
   }
 }
+
+.chat-container.fullscreen .fullscreen-toggle {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+
+  @media screen and (max-width: 768px) {
+    top: 20px;
+    right: 20px;
+  }
+}
