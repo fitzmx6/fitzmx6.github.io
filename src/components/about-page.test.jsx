@@ -31,14 +31,14 @@ describe('AboutPage Component', () => {
     render(<AboutPage />);
 
     // Assert
-    const githubLink = screen.getByRole('link', { name: /Github/i });
+    const githubLink = screen.getByRole('link', { name: /Check Out This Sites Code on Github/i });
     const linkedinLink = screen.getByRole('link', { name: /LinkedIn/i });
 
     expect(githubLink).toBeInTheDocument();
     expect(linkedinLink).toBeInTheDocument();
 
-    expect(githubLink.closest('a')).toHaveAttribute('href', 'https://github.com/fitzmx6/reactportfolio');
-    expect(linkedinLink.closest('a')).toHaveAttribute('href', 'https://www.linkedin.com/in/coryfitzpatrick');
+    expect(githubLink).toHaveAttribute('href', 'https://github.com/fitzmx6/fitzmx6.github.io');
+    expect(linkedinLink).toHaveAttribute('href', 'https://www.linkedin.com/in/coryfitzpatrick');
   });
 
   test('external links have correct attributes', () => {
@@ -57,13 +57,12 @@ describe('AboutPage Component', () => {
   test('renders technology links', () => {
     render(<AboutPage />);
 
-    expect(screen.getByText('Create React App')).toBeInTheDocument();
-    expect(screen.getByText('ReactDOM 19')).toBeInTheDocument();
+    expect(screen.getByText('React 19')).toBeInTheDocument();
     expect(screen.getByText('React Router')).toBeInTheDocument();
     expect(screen.getByText('Vite')).toBeInTheDocument();
-    expect(screen.getByText('CSS3')).toBeInTheDocument();
-    expect(screen.getByText('HTML5')).toBeInTheDocument();
+    expect(screen.getByText('SCSS')).toBeInTheDocument();
     expect(screen.getByText('RWDGRID')).toBeInTheDocument();
+    expect(screen.getByText('GitHub Pages')).toBeInTheDocument();
   });
 
   test('has correct container structure', () => {

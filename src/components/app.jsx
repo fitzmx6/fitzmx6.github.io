@@ -4,7 +4,8 @@ import {
   BrowserRouter as Router,
   Route,
   Switch,
-  Redirect
+  Redirect,
+  useLocation
 } from 'react-router-dom';
 import CategoryList from './category-list';
 import DetailItem from './detail-item';
@@ -13,11 +14,28 @@ import ChatbotPage from './chatbot-page';
 import Footer from './footer';
 import NotFound from './not-found';
 import Header from './header';
+import { initGA, trackPageView } from '../utils/analytics';
+
+// Component to track route changes for Google Analytics
+function RouteChangeTracker() {
+    const location = useLocation();
+
+    React.useEffect(() => {
+        trackPageView(location.pathname + location.search);
+    }, [location]);
+
+    return null;
+}
 
 export class App extends React.Component {
     constructor(props) {
         super(props);
         this.scrollTop = this.scrollTop.bind(this);
+    }
+
+    componentDidMount() {
+        // Initialize Google Analytics
+        initGA();
     }
 
     scrollTop() {
@@ -30,6 +48,7 @@ export class App extends React.Component {
         return (
             <Router onUpdate={this.scrollTop}>
                 <div>
+                    <RouteChangeTracker />
                     <Header />
 
                     <Switch>

@@ -41,7 +41,7 @@ describe('Header Component', () => {
   test('logo link has correct href attribute', () => {
     renderHeaderWithRouter();
 
-    expect(screen.getByRole('link', { name: 'Cory Fitzpatrick | Software Tech Lead' })).toHaveAttribute('href', '/dev');
+    expect(screen.getByRole('link', { name: 'Cory Fitzpatrick | Software Tech Lead' })).toHaveAttribute('href', '/');
   });
 
   test('mobile navigation toggle works', () => {

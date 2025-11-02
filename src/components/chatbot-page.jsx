@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import RobotIcon from './robot-icon';
+import { trackEvent } from '../utils/analytics';
 
 export default class ChatbotPage extends React.Component {
     constructor(props) {
@@ -19,12 +20,20 @@ export default class ChatbotPage extends React.Component {
     }
 
     toggleFullscreen() {
-        this.setState(prevState => ({
-            isFullscreen: !prevState.isFullscreen
-        }));
+        this.setState(prevState => {
+            const newFullscreenState = !prevState.isFullscreen;
+
+            // Track fullscreen toggle event
+            trackEvent('Chatbot', 'Toggle Fullscreen', newFullscreenState ? 'Enter' : 'Exit');
+
+            return { isFullscreen: newFullscreenState };
+        });
     }
 
     handleExampleClick(question) {
+        // Track example question click
+        trackEvent('Chatbot', 'Example Question Click', question);
+
         this.setState({ inputValue: question }, () => {
             // Submit the form after state is updated
             this.handleSubmit({ preventDefault: () => {} });
@@ -50,6 +59,9 @@ export default class ChatbotPage extends React.Component {
 
         const message = this.state.inputValue.trim();
         if (!message || this.state.isLoading) return;
+
+        // Track message sent event
+        trackEvent('Chatbot', 'Message Sent', 'User Query');
 
         // Add user message to chat
         const userMessage = { role: 'user', content: message };
@@ -122,7 +134,7 @@ export default class ChatbotPage extends React.Component {
 
         return (
             <div id="content">
-                <div class="container">
+                <div className="container">
                     {categories.map(category => (
                         <div key={category.name} className="grid-d-4 grid-t-6 grid-panel">
                             <NavLink to={category.path}>

@@ -50,13 +50,13 @@ div {
 
 * {
 	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
- 	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
- 	box-sizing: border-box;         /* Opera/IE 8+ */
+ 	-moz-box-sizing: border-box;		/* Firefox, other Gecko */
+ 	box-sizing: border-box;				 /* Opera/IE 8+ */
 }
 
 @font-face {
-    font-family: Nexa;
-    src: url(../fonts/NexaBold.woff);
+		font-family: Nexa;
+		src: url(../fonts/NexaBold.woff);
 }
 
 body {
@@ -64,7 +64,7 @@ body {
 }
 
 [class*='grid-'] {
-  margin-top: 10px;
+	margin-top: 10px;
 }
 
 .grid-d-4 {
@@ -75,8 +75,8 @@ body {
 .view {
 	float: right;
 	margin: 0 30px 0 auto;
-    border: 2px solid rgba(255, 255, 255, 0.4);
-    padding: 10px 30px;
+		border: 2px solid rgba(255, 255, 255, 0.4);
+		padding: 10px 30px;
 	color: #fff;
 	transition: all 1s ease;
 
@@ -98,8 +98,8 @@ header,
 footer {
 	width: 80%;
 	max-width: 1800px;
-    margin: 0 auto;
-    overflow: hidden;
+		margin: 0 auto;
+		overflow: hidden;
 }
 
 .grid-item {
@@ -110,6 +110,6 @@ footer {
 	overflow:hidden;
 	margin:0 3% 3% 0;
 	-webkit-box-shadow: 1px 1px 1px 1px rgba(197, 197, 197, .5);
-	-moz-box-shadow:    1px 1px 1px 1px rgba(197, 197, 197, .5);
-	box-shadow:         1px 1px 1px 1px rgba(197, 197, 197, .5);
+	-moz-box-shadow:		1px 1px 1px 1px rgba(197, 197, 197, .5);
+	box-shadow:				 1px 1px 1px 1px rgba(197, 197, 197, .5);
 }

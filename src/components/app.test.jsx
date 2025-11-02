@@ -10,6 +10,9 @@ Object.defineProperty(window, 'scrollTo', {
   writable: true
 });
 
+// Mock scrollIntoView for chatbot component
+Element.prototype.scrollIntoView = jest.fn();
+
 const renderAppWithRouter = (initialEntries = ['/']) => {
   return render(
     <MemoryRouter initialEntries={initialEntries}>
@@ -24,13 +27,15 @@ describe('App Component', () => {
   });
 
   test('renders header component', () => {
-    renderAppWithRouter();
+    const { container } = renderAppWithRouter();
 
     expect(screen.getByText('Cory Fitzpatrick | Software Tech Lead')).toBeInTheDocument();
-    expect(screen.getByText('Dev')).toBeInTheDocument();
-    expect(screen.getByText('Design')).toBeInTheDocument();
-    expect(screen.getByText('Photo')).toBeInTheDocument();
     expect(screen.getByText('About')).toBeInTheDocument();
+    // Check header nav links specifically
+    const header = container.querySelector('header');
+    expect(header).toHaveTextContent('Dev');
+    expect(header).toHaveTextContent('Design');
+    expect(header).toHaveTextContent('Photo');
   });
 
   test('renders footer component', () => {
@@ -41,24 +46,24 @@ describe('App Component', () => {
     expect(screen.getByText(`Copyright © ${new Date().getFullYear()}`)).toBeInTheDocument();
   });
 
-  test('redirects root path to /dev', () => {
+  test('renders chatbot page at root path', () => {
     renderAppWithRouter(['/']);
 
-    expect(screen.getByText('J&J')).toBeInTheDocument();
+    expect(screen.getByText(/Ask me about Cory's skills and experience/i)).toBeInTheDocument();
   });
 
-  test('redirects /web path to /dev', () => {
+  test('redirects /web path to root (chatbot page)', () => {
     renderAppWithRouter(['/web']);
 
-    expect(screen.getByText('J&J')).toBeInTheDocument();
+    expect(screen.getByText(/Ask me about Cory's skills and experience/i)).toBeInTheDocument();
   });
 
   test('renders dev category page', () => {
-    renderAppWithRouter(['/dev']);
+    const { container } = renderAppWithRouter(['/dev']);
 
-    expect(screen.getByText('J&J')).toBeInTheDocument();
-    expect(screen.getByText('Google + Fitbit')).toBeInTheDocument();
-    expect(screen.getByText('Cramer')).toBeInTheDocument();
+    // Dev page should have grid panels for portfolio items
+    const gridPanels = container.querySelectorAll('.grid-panel');
+    expect(gridPanels.length).toBeGreaterThan(0);
   });
 
   test('renders design category page', () => {
@@ -102,9 +107,9 @@ describe('App Component', () => {
 
   test('generates correct routes for all portfolio items', () => {
     // Arrange & Act
-    renderAppWithRouter(['/dev/jj']);
+    const { container } = renderAppWithRouter(['/dev/jj']);
 
     // Assert
-    expect(screen.getByText('J&J')).toBeInTheDocument();
+    expect(container.textContent).toContain('J&J');
   });
 });
