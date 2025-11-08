@@ -364,8 +364,8 @@
 		"image": "/images/ai/ai-thumb.jpg",
 		"items": [
 			{
-				"name": "Portfolio Chatbot Backend",
-				"url": "/ai/portfolio-chatbot-backend",
+				"name": "Portfolio Chatbot",
+				"url": "/ai/portfolio-chatbot",
 				"thumbPath": "/images/ai/chatbot-thumb.jpg",
 				"subContent": {
 					"images": [
