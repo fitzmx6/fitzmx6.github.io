@@ -6,8 +6,8 @@ export default defineConfig({
     plugins: [react()],
     base: '/',
     server: {
-        port: 3000,
-        strictPort: true,
+        port: parseInt(process.env.PORT || '3000'),
+        strictPort: false,
         open: true,
         watch: {
             usePolling: true

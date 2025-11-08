@@ -8,9 +8,13 @@ export const initGA = () => {
 
 	if (measurementId) {
 		ReactGA.initialize(measurementId);
-		console.log('Google Analytics initialized with ID:', measurementId);
+		if (process.env.NODE_ENV !== 'production') {
+			console.log('Google Analytics initialized with ID:', measurementId);
+		}
 	} else {
-		console.warn('Google Analytics Measurement ID not found. Set VITE_GA_MEASUREMENT_ID in your environment.');
+		if (process.env.NODE_ENV !== 'production') {
+			console.warn('Google Analytics Measurement ID not found. Set VITE_GA_MEASUREMENT_ID in your environment.');
+		}
 	}
 };
 

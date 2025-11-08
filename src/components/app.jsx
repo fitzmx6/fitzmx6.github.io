@@ -2,8 +2,8 @@ import React, { useEffect, useMemo } from 'react';
 import {
     BrowserRouter as Router,
     Route,
-    Switch,
-    Redirect,
+    Routes,
+    Navigate,
     useLocation
 } from 'react-router-dom';
 import portfolioData from '../data/data.json';
@@ -22,6 +22,25 @@ function RouteChangeTracker() {
 
     useEffect(() => {
         trackPageView(location.pathname + location.search);
+    }, [location]);
+
+    return null;
+}
+
+// Component to handle hash scrolling
+function HashScrollHandler() {
+    const location = useLocation();
+    const SCROLL_DELAY_MS = 100; // Wait for DOM to render
+
+    useEffect(() => {
+        if (location.hash) {
+            setTimeout(() => {
+                const element = document.querySelector(location.hash);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, SCROLL_DELAY_MS);
+        }
     }, [location]);
 
     return null;
@@ -46,9 +65,8 @@ function App() {
             category.items.map((item) => (
                 <Route
                     key={item.url}
-                    exact
                     path={item.url}
-                    component={DetailItem}
+                    element={<DetailItem />}
                 />
             ))
         );
@@ -58,26 +76,25 @@ function App() {
         <Router>
             <div>
                 <RouteChangeTracker />
+                <HashScrollHandler />
                 <Header />
 
-                <Switch>
-                    <Route exact path="/" component={HomePage} />
-                    <Route exact path="/ai" component={CategoryList} />
-                    <Route exact path="/dev" component={CategoryList} />
-                    <Route exact path="/design" component={CategoryList} />
-                    <Route exact path="/photo" component={CategoryList} />
-                    <Route exact path="/about" component={AboutPage} />
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/ai" element={<CategoryList />} />
+                    <Route path="/dev" element={<CategoryList />} />
+                    <Route path="/design" element={<CategoryList />} />
+                    <Route path="/photo" element={<CategoryList />} />
+                    <Route path="/about" element={<AboutPage />} />
 
                     {/* Detail pages for all portfolio items */}
                     {detailRoutes}
 
                     {/* Handle any indexed /web search results */}
-                    <Route exact path="/web">
-                        <Redirect to="/" />
-                    </Route>
+                    <Route path="/web" element={<Navigate to="/" replace />} />
 
-                    <Route path="*" component={NotFound} />
-                </Switch>
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
 
                 <Footer />
             </div>

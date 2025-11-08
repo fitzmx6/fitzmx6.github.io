@@ -1,28 +1,27 @@
 import React, { useMemo } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import portfolioData from '../data/data.json';
 import { getGridClass } from '../utils/grid';
 
-export default function CategoryList({ location, navToggle }) {
+export default function CategoryList({ navToggle }) {
+    const location = useLocation();
     const categoryData = useMemo(() => {
         const url = location.pathname;
         const category = url.replace(/[^\w\s]/gi, '');
         const data = portfolioData[category];
 
         if (!data || !data.items) {
-            console.warn(`Category "${category}" not found, falling back to dev`);
+            if (process.env.NODE_ENV !== 'production') {
+                console.warn(`Category "${category}" not found, falling back to dev`);
+            }
             return { items: portfolioData.dev.items, category: 'dev' };
         }
 
         return { items: data.items, category };
     }, [location.pathname]);
 
-    const gridClass = useMemo(() =>
-        getGridClass(categoryData.items.length),
-        [categoryData.items.length]
-    );
-
+    const gridClass = getGridClass(categoryData.items.length);
     const handleClick = navToggle || (() => {});
 
     return (
@@ -50,9 +49,6 @@ export default function CategoryList({ location, navToggle }) {
 }
 
 CategoryList.propTypes = {
-    location: PropTypes.shape({
-        pathname: PropTypes.string.isRequired,
-    }).isRequired,
     navToggle: PropTypes.func,
 };
 

@@ -6,10 +6,8 @@ export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
 
     const closeNav = useCallback(() => {
-        if (isOpen) {
-            setIsOpen(false);
-        }
-    }, [isOpen]);
+        setIsOpen(false);
+    }, []);
 
     const toggleNav = useCallback(() => {
         setIsOpen(prev => !prev);
@@ -41,7 +39,7 @@ export default function Header() {
                             <li key={item.path}>
                                 <NavLink
                                     to={item.path}
-                                    activeClassName="active"
+                                    className={({ isActive }) => isActive ? 'active' : ''}
                                     onClick={closeNav}
                                 >
                                     {item.label}

@@ -34,3 +34,8 @@ Thumbs.db
 
 # Optional coverage folder (if using testing)
 coverage/
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/

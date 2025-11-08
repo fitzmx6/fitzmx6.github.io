@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import PropTypes from 'prop-types';
 import RobotIcon from './robot-icon';
 import { trackEvent } from '../utils/analytics';
 import { API_URLS, EXAMPLE_QUESTIONS, CHAT_CONFIG } from '../constants/chatbot';
@@ -10,6 +9,13 @@ export default function Chatbot() {
     const [isLoading, setIsLoading] = useState(false);
     const [isFullscreen, setIsFullscreen] = useState(false);
     const messagesEndRef = useRef(null);
+    const isMountedRef = useRef(true);
+
+    useEffect(() => {
+        return () => {
+            isMountedRef.current = false;
+        };
+    }, []);
 
     const scrollToBottom = useCallback(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -34,16 +40,6 @@ export default function Chatbot() {
         setInputValue(e.target.value);
     }, []);
 
-    const handleExampleClick = useCallback((question) => {
-        trackEvent('Chatbot', 'Example Question Click', question);
-        setInputValue(question);
-        // Trigger submit with the question
-        setTimeout(() => {
-            const event = { preventDefault: () => {} };
-            handleSubmit(event, question);
-        }, 0);
-    }, []);
-
     const handleSubmit = useCallback(async (e, questionOverride = null) => {
         e.preventDefault();
 
@@ -52,14 +48,22 @@ export default function Chatbot() {
 
         trackEvent('Chatbot', 'Message Sent', 'User Query');
 
-        // Add user message
-        const userMessage = { role: 'user', content: message };
+        // Add user message with unique ID
+        const userMessage = {
+            role: 'user',
+            content: message,
+            id: `${Date.now()}-${Math.random()}`
+        };
         setMessages(prev => [...prev, userMessage]);
         setInputValue('');
         setIsLoading(true);
 
-        // Add empty assistant message
-        const assistantMessage = { role: 'assistant', content: '' };
+        // Add empty assistant message with unique ID
+        const assistantMessage = {
+            role: 'assistant',
+            content: '',
+            id: `${Date.now()}-${Math.random()}-assistant`
+        };
         setMessages(prev => [...prev, assistantMessage]);
 
         try {
@@ -89,31 +93,49 @@ export default function Chatbot() {
                 const chunk = decoder.decode(value, { stream: true });
 
                 // Update the last message with the new chunk - FIX: Create new message object
+                if (isMountedRef.current) {
+                    setMessages(prev => {
+                        const newMessages = [...prev];
+                        const lastMessageIndex = newMessages.length - 1;
+                        newMessages[lastMessageIndex] = {
+                            ...newMessages[lastMessageIndex],
+                            content: newMessages[lastMessageIndex].content + chunk
+                        };
+                        return newMessages;
+                    });
+                }
+            }
+        } catch (error) {
+            if (process.env.NODE_ENV !== 'production') {
+                console.error('Chatbot error:', error);
+            }
+            if (isMountedRef.current) {
                 setMessages(prev => {
                     const newMessages = [...prev];
                     const lastMessageIndex = newMessages.length - 1;
                     newMessages[lastMessageIndex] = {
                         ...newMessages[lastMessageIndex],
-                        content: newMessages[lastMessageIndex].content + chunk
+                        content: CHAT_CONFIG.errorMessage
                     };
                     return newMessages;
                 });
             }
-        } catch (error) {
-            console.error('Error:', error);
-            setMessages(prev => {
-                const newMessages = [...prev];
-                const lastMessageIndex = newMessages.length - 1;
-                newMessages[lastMessageIndex] = {
-                    ...newMessages[lastMessageIndex],
-                    content: CHAT_CONFIG.errorMessage
-                };
-                return newMessages;
-            });
         } finally {
-            setIsLoading(false);
+            if (isMountedRef.current) {
+                setIsLoading(false);
+            }
         }
     }, [inputValue, isLoading]);
+
+    const handleExampleClick = useCallback((question) => {
+        trackEvent('Chatbot', 'Example Question Click', question);
+        setInputValue(question);
+        // Trigger submit with the question
+        setTimeout(() => {
+            const event = { preventDefault: () => {} };
+            handleSubmit(event, question);
+        }, 0);
+    }, [handleSubmit]);
 
     const handleKeyDown = useCallback((e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -123,7 +145,7 @@ export default function Chatbot() {
     }, [handleSubmit]);
 
     return (
-        <div className={`chat-container ${isFullscreen ? 'fullscreen' : ''}`}>
+        <div id="chat-bot" className={`chat-container ${isFullscreen ? 'fullscreen' : ''}`}>
             {!isFullscreen && (
                 <div className="chat-header">
                     <h2>{CHAT_CONFIG.headerTitle}</h2>
@@ -164,7 +186,7 @@ export default function Chatbot() {
                     const isLoadingMessage = isLastMessage && message.role === 'assistant' && !message.content && isLoading;
 
                     return (
-                        <div key={index} className={`message ${message.role}`}>
+                        <div key={message.id} className={`message ${message.role}`}>
                             <div className="message-avatar">
                                 {message.role === 'user' ? '👤' : <RobotIcon />}
                             </div>
@@ -188,11 +210,12 @@ export default function Chatbot() {
                     <textarea
                         value={inputValue}
                         onChange={handleInputChange}
-                        placeholder={CHAT_CONFIG.placeholder}
+                        placeholder="Ask me about Cory... (Press Enter to send)"
                         className="chat-input"
                         rows="1"
                         disabled={isLoading}
                         onKeyDown={handleKeyDown}
+                        aria-label="Chat message input"
                     />
 
                     <button
@@ -207,5 +230,3 @@ export default function Chatbot() {
         </div>
     );
 }
-
-Chatbot.propTypes = {};

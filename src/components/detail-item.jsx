@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 import portfolioData from '../data/data.json';
-import PropTypes from 'prop-types';
 import { toKebabCase } from '../utils/string';
 
-export default function DetailItem({ location }) {
+export default function DetailItem() {
+    const location = useLocation();
     const detailData = useMemo(() => {
         const path = location.pathname;
         const category = path.split('/')[1];
@@ -29,7 +30,12 @@ export default function DetailItem({ location }) {
     }
 
     const { subContent, name } = detailData;
-    const sanitizedDesc = subContent.desc ? DOMPurify.sanitize(subContent.desc) : '';
+    const sanitizedDesc = subContent.desc
+        ? DOMPurify.sanitize(subContent.desc, {
+            ALLOWED_TAGS: ['a', 'br', 'strong', 'em', 'code'],
+            ALLOWED_ATTR: ['href', 'target', 'rel']
+          })
+        : '';
     const itemClass = toKebabCase(name);
 
     return (
@@ -50,7 +56,7 @@ export default function DetailItem({ location }) {
                 )}
 
                 <div className="images">
-                    {subContent.images.map((image, index) => (
+                    {subContent.images?.length > 0 && subContent.images.map((image, index) => (
                         <img
                             key={image}
                             src={image}
@@ -62,9 +68,3 @@ export default function DetailItem({ location }) {
         </div>
     );
 }
-
-DetailItem.propTypes = {
-    location: PropTypes.shape({
-        pathname: PropTypes.string.isRequired,
-    }).isRequired,
-};

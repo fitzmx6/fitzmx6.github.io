@@ -16,7 +16,7 @@ describe('AboutPage Component', () => {
 
     expect(screen.getByText(/Cory Fitzpatrick is a seasoned Software Tech Lead/)).toBeInTheDocument();
     expect(screen.getByText(/proven track record of guiding engineering teams/)).toBeInTheDocument();
-    expect(screen.getByText(/successfully driven the delivery of MVPs/)).toBeInTheDocument();
+    expect(screen.getByText(/successfully drove the delivery of MVPs/)).toBeInTheDocument();
     expect(screen.getByText(/dedication to mentorship/)).toBeInTheDocument();
   });
 

@@ -34,38 +34,12 @@ describe('DetailItemContent Component', () => {
     });
   });
 
-  test('renders link when subContent has link property', () => {
-    const propsWithLink = {
-      location: { pathname: '/dev/evans-open' }
-    };
-
-    render(<DetailItemContent {...propsWithLink} />);
-
-    const linkElement = screen.getByText(/Visit The Site/);
-    expect(linkElement).toBeInTheDocument();
-    expect(linkElement.closest('a')).toHaveAttribute('href', 'http://www.evansopen.com/');
-    expect(linkElement.closest('a')).toHaveAttribute('target', '_blank');
-    expect(linkElement.closest('a')).toHaveAttribute('rel', 'noopener noreferrer');
-  });
-
-  test('renders title as link when subContent has link', () => {
-    const propsWithLink = {
-      location: { pathname: '/dev/evans-open' }
-    };
-
-    render(<DetailItemContent {...propsWithLink} />);
-
-    const titleLink = screen.getByRole('heading', { level: 2 }).querySelector('a');
-    expect(titleLink).toBeInTheDocument();
-    expect(titleLink).toHaveAttribute('href', 'http://www.evansopen.com/');
-  });
-
-  test('renders title without link when no link in subContent', () => {
+  test('renders title as plain text', () => {
     render(<DetailItemContent {...mockProps} />);
 
     const heading = screen.getByRole('heading', { level: 2 });
     expect(heading).toBeInTheDocument();
-    expect(heading.querySelector('a')).toBeNull();
+    expect(heading.textContent).toBe('J&J');
   });
 
   test('renders video when videoLink is present', () => {
